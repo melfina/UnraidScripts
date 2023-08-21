@@ -1,0 +1,39 @@
+!/bin/bash
+
+echo "Starting script."
+
+# Beep that script is starting
+beep  -l 200 -f 600 -n -l 200 -f 800
+
+PATH=/usr/local/sbin:/usr/sbin:/sbin:/usr/local/bin:/usr/bin:/bin
+
+#Add any variables desired
+# NAME- Unraid Backup Script
+# DESCRIPTION- This script backs up all shares to external device.
+# DEVICE- WD Easystore 1TB SSD
+# REFERENCE- The internet and myself.
+
+
+#Set destination path
+DestinationPath="/mnt/disks/WD_Easystore_2648/Backups/"
+
+#Unraid GUI notification
+/usr/local/emhttp/webGui/scripts/notify -e "Unraid Server Notice" -s "Share Backup" -d "Backing up user shares to WD Easystore 1TB SSD" 
+
+
+#Start copy
+echo "Starting copy with progress shown."
+
+for x in /mnt/user/*
+do
+SourcePath=${x%/}
+rsync -a -r -progress $SourcePath $DestinationPath/$(date '+%m.%d.%Y')
+done
+
+#cd DestinationPath || exit
+
+
+echo "End script. Backup finished."
+
+#Unraid GUI notification
+/usr/local/emhttp/webGui/scripts/notify -e "Unraid Server Notice" -s "Share Backup" -d "Back up of user shares to WD Easystore 1TB SSD finished." 
